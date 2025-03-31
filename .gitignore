@@ -16,6 +16,7 @@ db.sqlite3
 *.sql
 *.pdf
 *.swp
+.gitignore
 
 # Media files (user uploads)
 media/

@@ -1,5 +1,7 @@
+from logging import exception
+
 from django.http import HttpResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from .models import Vacancy, Document
 from .forms import DocumentCreateForm
 # Create your views here.
@@ -51,7 +53,7 @@ def vacancy_detail(request,vacancy_id):
                 document = form.save(commit=False)
                 document.status = True
                 document.save()
-                return HttpResponse("Siz vacancy yubordingiz!")
+                return redirect("success")
             # else:
             #     print("Form is invalid:", form.errors)
 
@@ -72,7 +74,8 @@ def vacancy_detail(request,vacancy_id):
                 document = form.save(commit=False)
                 document.status = True
                 document.save()
-                return HttpResponse("Siz vacancy yubordingiz!")
+                # return HttpResponse("Siz vacancy yubordingiz!")
+                return redirect("success")
             # else:
             #     print("Form is invalid:", form.errors)
 
@@ -85,6 +88,20 @@ def vacancy_detail(request,vacancy_id):
             }
             return render(request, "main/vacancy_detail.html", ctx)
 
+def success_view(request,vacancy_id):
+    vacancy = get_object_or_404(Vacancy,pk=vacancy_id)
+    try:
+        document_status = Document.objects.get(vacancy=vacancy)
+        ctx = {
+            "document_status":document_status,
+            'vacancy':vacancy
+        }
+
+        return render(request,'main/success.html', ctx)
+    except Exception:
+        return render(request, '404.html', status=404)
+
+
 
 def custom_404(request, exception):
-    return render(request, '404.html', status=404)
+    return render(request, '404.html', name='error', status=404)

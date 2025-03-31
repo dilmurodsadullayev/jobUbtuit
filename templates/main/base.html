@@ -12,10 +12,40 @@
 
 </head>
 <body>
+<style>
+        job {
+            background-color: #eaf3ff;
+        }
 
-{% block content %}
-{% endblock content %}
-<script src="{% static 'js/index.js' %}"></script>
+ </style>
+<div class="job">
+    <div class="header">
+       <div class="logo">
+        <a href="https://www.ubtuit.uz/"> <!-- Bu yerni o'zingizga kerakli URL bilan almashtiring -->
+            <img style="width:50px; height:50px;" src="{% static 'images/logo_ubtuit.png' %}" alt="no logo">
+            TATU
+            </a>
+        </div>
+
+        <div class="header-menu">
+            <a href="{% url 'home' %}" class="active">Find Job</a>
+            <a href="#">Company Review</a>
+            <a href="#">Find Salaries</a>
+        </div>
+
+    </div>
+    {% block content %}
+    {% endblock content %}
+        <div class="header">
+        <div class="header-menu" >
+
+            <a  href="#">Company Review</a>
+            <a href="#">Find Salaries</a>
+        </div>
+
+    </div>
+</div>
+    <script src="{% static 'js/index.js' %}"></script>
 
 </body>
 </html>

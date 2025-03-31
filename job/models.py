@@ -3,6 +3,8 @@ from django.core.exceptions import ValidationError
 from datetime import date
 import re
 import os
+from django.core.files.storage import default_storage
+
 # Create your models here.
 
 class Vacancy(models.Model):
@@ -19,12 +21,15 @@ class Vacancy(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def clean(self):
-        # start_date va end_date tengligini tekshiramiz
-        if self.opening_time <= self.end_time:
+        # Agar end_time opening_time dan oldin bo‘lsa xato chiqaramiz
+        if self.end_time < self.opening_time:
+            raise ValidationError({'end_time': "Tugash vaqti ochilish vaqtidan oldin bo‘lishi mumkin emas!"})
+
+        # Agar sanalar hozirgi kundan o‘tgan bo‘lsa, statusni `False` qilamiz
+        if self.end_time < date.today():
             self.status = False
         else:
             self.status = True
-
 
         # if self.opening_time < self.end_time:
         #     raise ValidationError("End date boshlanish sanasidan oldin bo'lishi mumkin emas!")
@@ -122,47 +127,15 @@ class Document(models.Model):
 
     def delete(self, *args, **kwargs):
         """
-        Model o'chirilganda, barcha biriktirilgan fayllarni fayl tizimidan o'chiradi.
+        Model o‘chirilar ekan, unga bog‘langan barcha fayllarni ham media papkadan o‘chiradi.
         """
-        # Fayllarni birma-bir o'chirish
-        if self.passport and os.path.isfile(self.passport.path):
-            os.remove(self.passport.path)
-        if self.objective and os.path.isfile(self.objective.path):
-            os.remove(self.objective.path)
-        if self.diploma and os.path.isfile(self.diploma.path):
-            os.remove(self.diploma.path)
-        if self.language_certificate and os.path.isfile(self.language_certificate.path):
-            os.remove(self.language_certificate.path)
-        if self.benefits and os.path.isfile(self.benefits.path):
-            os.remove(self.benefits.path)
+        file_fields = [self.passport, self.objective, self.diploma, self.language_certificate, self.benefits]
 
-        # Bazadan o'chirish
+        for file_field in file_fields:
+            if file_field and file_field.path and os.path.isfile(file_field.path):
+                os.remove(file_field.path)
+
         super().delete(*args, **kwargs)
-
-    def save(self, *args, **kwargs):
-        """
-        Fayl yangilanganida eski fayllarni tizimdan o'chiradi.
-        """
-        if self.pk:  # Faqat mavjud obyektlar uchun
-            old_instance = Document.objects.filter(pk=self.pk).first()
-            if old_instance:
-                if old_instance.passport != self.passport:
-                    if old_instance.passport and os.path.isfile(old_instance.passport.path):
-                        os.remove(old_instance.passport.path)
-                if old_instance.objective != self.objective:
-                    if old_instance.objective and os.path.isfile(old_instance.objective.path):
-                        os.remove(old_instance.objective.path)
-                if old_instance.diploma != self.diploma:
-                    if old_instance.diploma and os.path.isfile(old_instance.diploma.path):
-                        os.remove(old_instance.diploma.path)
-                if old_instance.language_certificate != self.language_certificate:
-                    if old_instance.language_certificate and os.path.isfile(old_instance.language_certificate.path):
-                        os.remove(old_instance.language_certificate.path)
-                if old_instance.benefits != self.benefits:
-                    if old_instance.benefits and os.path.isfile(old_instance.benefits.path):
-                        os.remove(old_instance.benefits.path)
-
-        super().save(*args, **kwargs)
 
 
 
