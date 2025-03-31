@@ -1,47 +1,31 @@
 {% extends 'main/base.html' %}
-{% load static %}
-{% block title %}Bosh sahifa{% endblock title %}
-
-
+{% block title %} TATU UF Vakansiyalar sayti {% endblock title %}
 {% block content %}
+    <div class="container mx-auto py-10">
+        <h2 class="text-3xl font-bold text-center mb-8">Vakansiyalar</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {% for vacancy in vacancies %}
+           <a href="{% url 'vacancy_detail' vacancy_id=vacancy.id %}" class="text-decoration-none">
+            <div class="card shadow-lg border-0 rounded-3 p-4 mb-3">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h5 class="fw-bold text-dark mb-1">{{ vacancy.department }}</h5>
+                        <p class="text-muted small">{{ vacancy.position }}</p>
+                    </div>
+                    <div class="menu-dot"></div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <span class="badge bg-primary p-2">{{ vacancy.end_time }}</span>
+                    <button class="btn btn-success btn-sm px-3">Ko'rish</button>
+                </div>
+            </div>
+        </a>
 
- <div class="wrapper">
-  <div class="main-container">
-   <div class="searched-jobs">
-    <div class="searched-bar">
+
+            {% empty %}
+            <h3>No vacancy</h3>
+            {% endfor %}
+        </div>
     </div>
-    <div class="job-cards">
-     {% for vacancy in vacancies %}
-
-     <div class="job-card">
-         <a style="text-decoration:none;" href="{% url 'vacancy_detail' vacancy_id=vacancy.id %}">
-            <div class="job-card-header">
-               <div class="menu-dot"></div>
-              </div>
-             <div class="job-card-title text-gray-900 dark:text-gray-100 font-bold text-lg">
-                 {{ vacancy.department }}
-             </div>
-             <div class="job-card-subtitle text-gray-700 dark:text-gray-300 text-sm">
-                 {{ vacancy.position }}
-             </div>
-              <div class="job-detail-buttons">
-               <button class="search-buttons detail-button">{{ vacancy.end_time }}</button>
-
-              </div>
-         </a>
-
-<!--      <div class="job-card-buttons">-->
-<!--       <button class="search-buttons card-buttons">Apply Now</button>-->
-<!--       <button class="search-buttons card-buttons-msg">Messages</button>-->
-<!--      </div>-->
-     </div>
-     {% empty %}
-     <h3>No Vacancy</h3>
-     {% endfor %}
-    </div>
-
-   </div>
-  </div>
- </div>
 
 {% endblock content %}

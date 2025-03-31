@@ -4,125 +4,12 @@
 
 
 {% block content %}
-<style>
-   body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f7fc;
-    margin: 0;
-    padding: 0;
-}
-
-.container {
-    width: 90%;
-    max-width: 1000px;
-    margin: 20px auto;
-    padding: 20px;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    overflow: auto; /* Scroll qilishni yoqish */
-}
-
-.headers {
-    background: #d9534f;
-    color: white;
-    text-align: center;
-    padding: 15px;
-    border-radius: 10px;
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 20px;
-}
-
-.form-group {
-    margin-bottom: 15px;
-}
-
-label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 5px;
-}
-
-input, select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-    transition: border-color 0.3s, box-shadow 0.3s;
-}
-
-input:focus, select:focus {
-    outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-}
-
-.btn {
-    background: #28a745;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background 0.3s ease;
-}
-
-.btn:hover {
-    background: #218838;
-}
-
-.details-card {
-    background: #f8f9fa;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    margin-top: 20px;
-}
-
-.details-card h5 {
-    font-size: 18px;
-    color: #333;
-    margin-bottom: 15px;
-}
-
-.details-card p {
-    font-size: 16px;
-    color: #555;
-    margin-bottom: 10px;
-}
-
-.form-container {
-    background: #ffffff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    border: 1px solid #ddd;
-}
-
-
-
-</style>
-
-
-<body>
-    <div class="container my-5">
-        <div class="row">
-            <div class="col-12">
-                   {% if vacancy.status %}
-
-                    {% else %}
-                 <div class="headers">
-                  <h4>Ushbu vakansiya muddati tugagan</h4>
-                </div>
-                 {% endif %}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-8">
-                <div class="form-container">
+<div class="container py-5">
+        <div class="row g-4">
+            <!-- Forma qismi -->
+            <div class="col-md-6">
+                <div class="card shadow-sm p-4">
+                    <h3 class="mb-3 text-primary">Vakansiya Uchun Ariza</h3>
                     <form method="post" enctype="multipart/form-data"> {% csrf_token %}
                         <div class="mb-3">
                             <label for="fullName" class="form-label">Ism familiya*</label>
@@ -210,9 +97,11 @@ input:focus, select:focus {
                     </form>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="details-card">
-                    <h5>Vakansiya haqida batafsil</h5>
+
+            <!-- Vakansiya ma'lumotlari qismi -->
+            <div class="col-md-6">
+                <div class="card shadow-sm p-4">
+                    <h3 class="text-primary">Vakansiya haqida batafsil</h3>
                     <p><strong>Lavozim:</strong> {{ vacancy.position }}</p>
                     <p><strong>Bo'lim:</strong> {{ vacancy.department }}</p>
                     <p><strong>Stavka:</strong> {{ vacancy.rate }}</p>
@@ -228,10 +117,16 @@ input:focus, select:focus {
                     <p><strong>Talablar:</strong> {{ vacancy.requirement }}</p>
                     <p><strong>Ochilgan vaqt:</strong> {{ vacancy.opening_time }}</p>
                     <p><strong>Tugash vaqti:</strong> {{ vacancy.end_time }}</p>
+                     <!-- Muddati tugagan xabar -->
+                    {% if vacancy.status %}
+
+                    {% else %}
+                    <div class="alert alert-danger mt-3 text-center">
+                        <strong>Diqqat!</strong> Ushbu vakansiya muddati tugagan.
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </div>
-
-
 {% endblock content %}

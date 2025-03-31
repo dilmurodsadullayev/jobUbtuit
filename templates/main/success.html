@@ -3,52 +3,36 @@
 {% block title %} success {% endblock title %}
 
 {% block content %}
-<html>
-  <head>
-    <link href="https://fonts.googleapis.com/css?family=Nunito+Sans:400,400i,700,900&display=swap" rel="stylesheet">
-  </head>
-    <style>
-      body {
-        text-align: center;
-        padding: 40px 0;
-        background: #EBF0F5;
-      }
-        h1 {
-          color: #88B04B;
-          font-family: "Nunito Sans", "Helvetica Neue", sans-serif;
-          font-weight: 900;
-          font-size: 40px;
-          margin-bottom: 10px;
+<style>
+        .success-card {
+            max-width: 450px;
+            margin: 50px auto;
+            text-align: center;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
-        p {
-          color: #404F5E;
-          font-family: "Nunito Sans", "Helvetica Neue", sans-serif;
-          font-size:20px;
-          margin: 0;
+        .success-icon {
+            height: 100px;
+            width: 100px;
+            background: #d4edda;
+            color: #28a745;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            margin: 0 auto 20px;
         }
-      i {
-        color: #9ABC66;
-        font-size: 100px;
-        line-height: 200px;
-        margin-left:-15px;
-      }
-      .card {
-        background: white;
-        padding: 60px;
-        border-radius: 4px;
-        box-shadow: 0 2px 3px #C8D0D8;
-        display: inline-block;
-        margin: 0 auto;
-      }
     </style>
 
-      <div style="margin-top:10px; margin-bottom:10px;" class="card">
-      <div style="border-radius:200px; height:200px; width:200px; background: #F8FAF5; margin:0 auto;">
-        <i class="checkmark">✓</i>
-      </div>
-        <h1>Tabriklayman</h1>
-        <p>Siz <b>{{ vacancy.position }}</b> <br/>lavozimiga so'rov yubordingiz!</p>
-        <a href="{% url 'vacancy_detail' vacancy_id=vacancy.id %}">Qaytish</a>
-      </div>
 
+    <div class="card success-card">
+        <div class="success-icon">
+            ✓
+        </div>
+        <h1 class="text-success">Tabriklayman!</h1>
+        <p class="mb-3">Siz <b>{{ vacancy.position }}</b> lavozimiga Ariza yubordingiz!</p>
+        <a href="{% url 'vacancy_detail' vacancy_id=vacancy.id %}" class="btn btn-success">Qaytish</a>
+    </div>
 {% endblock content %}
