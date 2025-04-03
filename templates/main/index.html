@@ -1,5 +1,7 @@
 {% extends 'main/base.html' %}
-{% block title %} TATU UF Vakansiyalar sayti {% endblock title %}
+{% block title %} Muhammad Al-Хorazmiy nomidagi
+Toshkent Axborot Texnologiyalari Universiteti Urganch filiali
+Vakansiyalar Sayti {% endblock title %}
 {% block content %}
     <div class="container mx-auto py-10">
         <h2 class="text-3xl font-bold text-center mb-8">Vakansiyalar</h2>
@@ -9,7 +11,7 @@
             <div class="card shadow-lg border-0 rounded-3 p-4 mb-3">
                 <div class="d-flex align-items-center justify-content-between">
                     <div>
-                        <h5 class="fw-bold text-dark mb-1">{{ vacancy.department }}</h5>
+                        <h5 class="fw-bold text-dark mb-1">{{ vacancy.department|truncatechars:30  }}</h5>
                         <p class="text-muted small">{{ vacancy.position }}</p>
                     </div>
                     <div class="menu-dot"></div>
