@@ -11,22 +11,7 @@
                 <div class="card shadow-sm p-4">
                     <h3 class="mb-3 text-primary">Vakansiya Uchun Ariza</h3>
                     <form method="post" enctype="multipart/form-data"> {% csrf_token %}
-                        <div class="mb-3">
-                            <label for="fullName" class="form-label">Ism familiya*</label>
-                            <input type="tetpxt" class="form-control" id="fullName" placeholder="Ismingizni kiriting" name="full_name">
-                        </div>
-                        <div class="mb-3">
-                            <label for="birthDate" class="form-label">Tug'ilgan sana*</label>
-                            <input type="hidden" value="{{ vacancy.id }}" name="vacancy">
-                            <input type="date" class="form-control" id="birthDate" name="birth_date">
-                            {% if form.passport.errors %}
-                            <div class="text-danger small">Tug'ulgan sanangizni to'g'ri kiritng!</div>
-                            {% endif %}
-                        </div>
-                        <div class="mb-3">
-                            <label for="phoneNumber" class="form-label">Telefon nomer*</label>
-                            <input type="tel" class="form-control" id="phoneNumber" placeholder="Telefon nomeringizni kiriting" name="phone_number">
-                        </div>
+                        <input type="hidden" value="{{ vacancy.id }}" name="vacancy">
                      <div class="mb-3">
                         <label for="passport" class="form-label">Passport*</label>
                         <input type="file" class="form-control" id="passport" name="passport">
@@ -95,6 +80,13 @@
 
                         {% endif %}
                     </form>
+                    <div id="formSpinner" class="d-none text-center mt-3">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Yuklanmoqda...</span>
+                        </div>
+                        <p>Yuklanmoqda, iltimos kuting...</p>
+                    </div>
+
                 </div>
             </div>
 
@@ -137,4 +129,27 @@
             </div>
         </div>
     </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.querySelector('form');
+        const spinner = document.getElementById('formSpinner');
+        const submitButton = form.querySelector('button[type="submit"]');
+
+        form.addEventListener('submit', function (event) {
+            event.preventDefault(); // Forma yuborilishini oldini olish
+            if (spinner) spinner.classList.remove('d-none');
+            if (submitButton) submitButton.disabled = true;
+
+            // 3 soniya kutish
+            setTimeout(function() {
+                // Formani yuborish
+                form.submit();
+            }, 3000); // 3000ms = 3 soniya
+        });
+    });
+</script>
+
+
 {% endblock content %}
+

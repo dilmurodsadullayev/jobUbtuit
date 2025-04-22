@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registratsiya Sahifa</title>
+    <link rel="stylesheet" href="{% static 'css/registration.css' %}">
+</head>
+<body>
+    <div class="container">
+        <div class="registration-form">
+            <h2>🔹 <span>Registration</span> 🔹</h2>
+
+            <!-- Xatoliklarni ko'rsatish -->
+            {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                        <div class="alert alert-danger">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!-- Forma -->
+            <form class="form-flex" method="post">  {% csrf_token %}
+                <div class="form-second">
+                      <div class="form-field">
+                    <input type="text" placeholder="Username" name="username" required>
+                    {% if form.username.errors %}
+                        <ul class="error-list">
+                            {% for error in form.username.errors %}
+                                <li class="error">{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+                <div class="form-field">
+                    <input type="text" placeholder="First Name" name="first_name" required>
+                    {% if form.first_name.errors %}
+                        <ul class="error-list">
+                            {% for error in form.first_name.errors %}
+                                <li class="error">{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+
+                 <div class="form-field">
+                    <input type="text" placeholder="Last Name" name="last_name" required>
+                    {% if form.last_name.errors %}
+                        <ul class="error-list">
+                            {% for error in form.last_name.errors %}
+                                <li class="error">{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+            </div>
+                </div>
+                  <div class="form-second">
+                    <div class="form-field">
+                    <input type="email" placeholder="Email" name="email" required>
+                    {% if form.email.errors %}
+                        <ul class="error-list">
+                            {% for error in form.email.errors %}
+                                <li class="error">{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+
+                <div class="form-field">
+                    <input type="date" placeholder="Date of Birth" name="birthdate" required>
+                    {% if form.birthdate.errors %}
+                        <ul class="error-list">
+                            {% for error in form.birthdate.errors %}
+                                <li class="error">{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+                <div class="form-field">
+                    <input type="tel" placeholder="Phone number" name="phone_number" required>
+                    {% if form.phone_number.errors %}
+                        <ul class="error-list">
+                            {% for error in form.phone_number.errors %}
+                                <li class="error">{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+
+                <div class="form-field password-container">
+                    <input type="password" placeholder="Password" name="password1" required>
+                    {% if form.password1.errors %}
+                        <ul class="error-list">
+                            {% for error in form.password1.errors %}
+                                <li class="error">{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    <span class="eye-icon">👁</span>
+                </div>
+
+                <div class="form-field password-container">
+                    <input type="password" placeholder="Confirm Password" name="password2" required>
+                    {% if form.password2.errors %}
+                        <ul class="error-list">
+                            {% for error in form.password2.errors %}
+                                <li class="error">{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    <span class="eye-icon">👁</span>
+                </div>
+
+                </div>
+
+            <button type="submit">CREATE ACCOUNT</button>
+
+            </form>
+
+            <p class="signin-text">Already have an account? <a href="{% url 'signin' %}">Sign in</a></p>
+        </div>
+    </div>
+</body>
+</html>

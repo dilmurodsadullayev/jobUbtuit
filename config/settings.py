@@ -27,7 +27,7 @@ import os
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 # DEBUG = os.getenv("DEBUG")
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -43,6 +43,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "job"
 ]
+
+AUTH_USER_MODEL = 'job.CustomUser'
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -67,10 +70,12 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                # "job.context_processors.base_translations",
             ],
         },
     },
 ]
+
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
@@ -102,6 +107,17 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
+]
+
+
+LANGUAGES = [
+    ('en', 'English'),
+    ('uz', 'O\'zbekcha'),
+
+]
+
+LOCALE_PATHS = [
+    BASE_DIR / 'locale',  # Tarjimalar uchun papka
 ]
 
 
@@ -138,3 +154,10 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+
+LOGIN_URL = '/signin/'
+
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'home'

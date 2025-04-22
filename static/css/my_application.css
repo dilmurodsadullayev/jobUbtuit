@@ -1,0 +1,124 @@
+
+h2 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+.application-card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-left: 5px solid #007bff;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  transition: transform 0.2s ease;
+}
+
+.application-card:hover {
+  transform: scale(1.01);
+}
+
+.application-card h3 {
+  margin-top: 0;
+  color: #007bff;
+}
+
+.application-card p {
+  margin: 8px 0;
+  color: #555;
+}
+
+.view-btn {
+  display: inline-block;
+  margin-top: 10px;
+  text-decoration: none;
+  background-color: #007bff;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 5px;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.view-btn:hover {
+  background-color: #0056b3;
+}
+
+.status {
+  position: relative;
+  display: inline-block;
+}
+
+.approved {
+  position: relative;
+  font-weight: bold;
+  color: green;
+  cursor: default;
+}
+
+.hover-modal {
+  display: none;
+  position: absolute;
+  top: 120%;
+  left: 0;
+  background-color: #fff;
+  color: #333;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  border: 1px solid #ddd;
+  z-index: 100;
+  width: 220px;
+  font-size: 14px;
+  min-width: 220px;
+  max-width: 400px;
+  white-space: normal; /* matnni qatorga bo'ladi */
+  word-wrap: break-word;
+}
+
+.approved:hover .hover-modal {
+  display: block;
+}
+
+
+/* */
+.rejected {
+  position: relative;
+  font-weight: bold;
+  color: red;
+  cursor: default;
+}
+
+.rejected:hover .hover-modals {
+  display: block;
+}
+/* Modalni boshlang‘ichda yashirib qo‘yish */
+.hover-modal {
+    display: none;  /* Yashirin */
+    position: absolute;
+    background-color: white;
+    padding: 10px;
+    border: 1px solid #ccc;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    max-width: 300px;
+    z-index: 1000;
+    margin-top: 5px;
+    border-radius: 5px;
+}
+
+/* Batafsil tugmasi uchun styling */
+.details-btn {
+    background-color: #3498db;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.details-btn:hover {
+  background-color: #2980b9;
+}
+

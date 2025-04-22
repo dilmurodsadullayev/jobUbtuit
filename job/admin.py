@@ -1,5 +1,7 @@
 from django.contrib import admin
-from .models import Vacancy, Document
+from django.contrib.auth.admin import UserAdmin
+
+from .models import Vacancy, Document, CustomUser, DocumentUser,DocumentIssue, View
 
 # Vacancy modeli uchun admin sozlamasi
 @admin.register(Vacancy)
@@ -12,7 +14,36 @@ class VacancyAdmin(admin.ModelAdmin):
 
 @admin.register(Document)
 class DocumentAdmin(admin.ModelAdmin):
-    list_display = ('full_name', 'education_level', "status", 'timestamp')
+    list_display = ('education_level', 'timestamp')
     list_filter = ('timestamp',)
-    search_fields = ('full_name',)
+    # search_fields = ('full_name',)
     ordering = ('-timestamp',)
+
+
+class CustomUserAdmin(UserAdmin):
+    model = CustomUser
+    list_display = ['username', 'email', 'birthdate', 'middle_name', 'phone_number']
+    search_fields = ['username', 'email']
+    list_filter = ['username']
+
+    fieldsets = (
+        (None, {'fields': ('username', 'password')}),
+        ('Personal Info', {
+            'fields': ('first_name', 'last_name', 'middle_name', 'email', 'birthdate', 'phone_number')
+        }),
+        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
+        ('Important dates', {'fields': ('last_login', 'date_joined')}),
+    )
+
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('username', 'password1', 'password2', 'email', 'birthdate', 'middle_name', 'phone_number'),
+        }),
+    )
+
+
+admin.site.register(CustomUser)
+admin.site.register(DocumentIssue)
+admin.site.register(DocumentUser)
+admin.site.register(View)

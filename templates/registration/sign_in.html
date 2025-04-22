@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Sahifa</title>
+    <link rel="stylesheet" href="{% static 'css/registration.css' %}">
+</head>
+<body>
+    <div class="container">
+        <div class="registration-form">
+            <h2>🔹 <span>Login</span> 🔹</h2>
+
+            <!-- Xatoliklarni ko'rsatish -->
+            {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                        <div class="alert alert-danger">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+                <input type="text" placeholder="Usernameni kiriting" name="username" required>
+                <div class="password-container">
+                    <input type="password" placeholder="Passwordni kiriting" name="password" required>
+                    <span class="eye-icon">👁</span>
+                </div>
+                <button type="submit">SIGN IN</button>
+            </form>
+            <p class="signin-text">Don't have an account? <a href="{% url 'signup' %}">Create one</a></p>
+        </div>
+    </div>
+</body>
+</html>

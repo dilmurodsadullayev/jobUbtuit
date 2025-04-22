@@ -1,0 +1,175 @@
+{% extends 'main/base.html' %}
+{% block title %} Mening arizalrim {% endblock title %}
+
+{% block content %}
+<style>
+.link-with-modal {
+  position: relative;
+  display: inline-block;
+}
+
+.view-link {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: bold;
+  padding: 5px;
+}
+
+.hover-modal {
+  display: none;
+  position: absolute;
+  top: 120%;
+  left: 0;
+  width: 250px;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 10px;
+  color: #333;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+.link-with-modal:hover .hover-modal {
+  display: block;
+}
+
+
+</style>
+
+<div class="container mx-auto py-10">
+    <h2>Yuborilgan Arizalar</h2>
+    {% for my_application in my_applications %}
+    <div class="application-card">
+        <h3>📌 Vacansiya: {{ my_application.document.vacancy.position }}</h3>
+        <p><strong>F.I.Sh:</strong> Ali Valiyev</p>
+
+        <div class="docs">
+            {% if my_application.document.diploma %}
+            <p><strong>🎓 Diplom nusxasi:</strong><a href="{{ my_application.document.diploma.url }}" target="_blank">Ko‘rish</a></p>
+            {% else %}
+            <p><strong>🎓 Diplom nusxasi:</strong></p>
+                <div class="link-with-modal">
+                  <a href="#" class="view-link" target="_blank">Ko‘rish</a>
+                  <div class="hover-modal">
+                    <p>Bu yerda diplom nusxasi haqida ma'lumot chiqadi.</p>
+                  </div>
+                </div>
+            {% endif %}
+            {% if my_application.document.passport %}
+            <p><strong>🪪 Passport nusxasi:</strong> <a href="{{ my_application.document.passport.url }}" target="_blank">Ko‘rish</a></p>
+            {% else %}
+            <p><strong>🪪 Passport nusxasi:</strong> <a href="" target="_blank">Ko‘rish</a></p>
+            {% endif %}
+            {% if my_application.document.objective %}
+            <p><strong>🎯 Objective:</strong> <a href="{{ my_application.document.objective.url }}" target="_blank">Ko‘rish</a></p>
+            {% else %}
+            <p><strong>🎯 Objective:</strong> <a href="" target="_blank">Ko‘rish</a></p>
+            {% endif %}
+            {% if my_application.document.diploma.url %}
+            <p><strong>🌐 Language:</strong> <a href="{{ my_application.document.language_certificate.url }}" target="_blank">Ko‘rish</a></p>
+            {% else %}
+            <p><strong>🌐 Language:</strong> <a href="" target="_blank">Ko‘rish</a></p>
+            {% endif %}
+        </div>
+
+       <div class="status">
+           {% if my_application.document.status == 'accepted' %}
+          <span class="approved">
+            ✅ Tasdiqlandi
+            <div class="hover-modal">
+              Ariza ko‘rib chiqildi va tasdiqlandi.
+            </div>
+          </span>
+         {% elif my_application.document.status == 'rejected' %}
+           <span class="rejected" data-id="{{ my_application.document.id }}">
+                ❌ Rad etildi
+                <button class="details-btn">Batafsil</button>
+                <div class="hover-modal" style="display: none;">
+                    <!-- Issue malumotlari shu yerda ko'rsatiladi -->
+                </div>
+            </span>
+            {% else %}
+              <span class="approved">
+            🌀 Ko'rib chiqlmoqda
+            <div class="hover-modal">
+              Ariza ko‘rib chiqilmoqda.
+            </div>
+          </span>
+           {% endif %}
+        </div>
+    </div>
+    {% empty %}
+    <h3>No Application</h3>
+    {% endfor %}
+    <!-- Yana shunaqa kartochkalar bo‘lishi mumkin -->
+
+
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+document.querySelectorAll('.details-btn').forEach(button => {
+    button.addEventListener('click', function () {
+        const modal = this.closest('.rejected').querySelector('.hover-modal');
+        const documentId = this.closest('.rejected').getAttribute('data-id');
+
+        // AJAX so'rovini yuborish
+        fetch(`/hover-status/?id=${documentId}`)
+            .then(response => response.json())
+            .then(data => {
+                // Agar issues mavjud bo'lsa
+                if (data.issues && data.issues.length > 0) {
+                    const issue = data.issues[0];
+
+                    // Modal ichidagi kontentni yangilash
+                    const issueDetails = `
+                        <p><strong>Kamchilik:</strong> ${issue.message}</p>
+                        <p><strong>Yozilgan sana:</strong> ${issue.created_at}</p>
+                    `;
+                    modal.innerHTML = issueDetails;
+
+                    // Modalni ko'rsatish
+                    modal.style.display = 'block';
+
+                    // Modalni 5 sekunddan keyin yashirish
+                    setTimeout(function() {
+                        modal.style.display = 'none';
+                    }, 5000); // 5000ms = 5 sekund
+                } else {
+                    modal.innerHTML = 'Hech qanday kamchilik topilmadi.';
+                    modal.style.display = 'block';
+
+                    // Modalni 5 sekunddan keyin yashirish
+                    setTimeout(function() {
+                        modal.style.display = 'none';
+                    }, 5000); // 5000ms = 5 sekund
+                }
+            })
+            .catch(error => {
+                console.error('Xatolik:', error);
+                modal.innerHTML = 'Xatolik yuz berdi.';
+                modal.style.display = 'block';
+
+                // Modalni 5 sekunddan keyin yashirish
+                setTimeout(function() {
+                    modal.style.display = 'none';
+                }, 5000); // 5000ms = 5 sekund
+            });
+    });
+});
+
+// Modalga tashqaridan bosilganda ham yopilishi uchun
+window.addEventListener("click", function(event) {
+    document.querySelectorAll('.hover-modal').forEach(modal => {
+        if (!modal.contains(event.target) && !event.target.matches(".details-btn")) {
+            modal.style.display = 'none';
+        }
+    });
+});
+
+
+
+</script>
+
+
+{% endblock content %}

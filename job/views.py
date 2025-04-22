@@ -1,9 +1,14 @@
 from logging import exception
-
-from django.http import HttpResponse
+from django.contrib import messages
+from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Vacancy, Document
-from .forms import DocumentCreateForm
+from .models import Vacancy, Document, DocumentUser, CustomUser, DocumentIssue
+from .forms import DocumentCreateForm, RegistrationForm
+from django.contrib.auth.forms import AuthenticationForm
+
+
 # Create your views here.
 
 def index_view(request):
@@ -16,8 +21,9 @@ def index_view(request):
 
     return render(request, 'main/index.html', ctx)
 
-
+@login_required(login_url="/signin")
 def vacancy_detail(request,vacancy_id):
+    user = CustomUser.objects.get(id=request.user.id)
     if request.method == "GET":
         vacancy = get_object_or_404(Vacancy, pk=vacancy_id)
         try:
@@ -45,15 +51,21 @@ def vacancy_detail(request,vacancy_id):
     elif request.method == "POST":
         vacancy = get_object_or_404(Vacancy, pk=vacancy_id)
         try:
+            vacancy = get_object_or_404(Vacancy, pk=vacancy_id)
             document = Document.objects.get(vacancy=vacancy)
             form = DocumentCreateForm(request.POST, request.FILES)
             education_levels = Document.EDUCATION_LEVELS
 
             if form.is_valid():
                 document = form.save(commit=False)
-                document.status = True
                 document.save()
-                return redirect("success")
+                print(document)
+                DocumentUser.objects.create(
+                    user=user,
+                    document=document
+                )
+
+                return redirect("success", vacancy_id=vacancy.id)
             # else:
             #     print("Form is invalid:", form.errors)
 
@@ -72,10 +84,15 @@ def vacancy_detail(request,vacancy_id):
 
             if form.is_valid():
                 document = form.save(commit=False)
-                document.status = True
+
                 document.save()
+                print(document)
+                DocumentUser.objects.create(
+                    user=user,
+                    document=document
+                )
                 # return HttpResponse("Siz vacancy yubordingiz!")
-                return redirect("success")
+                return redirect("success", vacancy_id=vacancy.id)
             # else:
             #     print("Form is invalid:", form.errors)
 
@@ -88,20 +105,102 @@ def vacancy_detail(request,vacancy_id):
             }
             return render(request, "main/vacancy_detail.html", ctx)
 
-def success_view(request,vacancy_id):
-    vacancy = get_object_or_404(Vacancy,pk=vacancy_id)
-    try:
-        document_status = Document.objects.get(vacancy=vacancy)
-        ctx = {
-            "document_status":document_status,
-            'vacancy':vacancy
-        }
-
-        return render(request,'main/success.html', ctx)
-    except Exception:
-        return render(request, '404.html', status=404)
 
 
+def success_view(request, vacancy_id):
+    vacancy = get_object_or_404(Vacancy, pk=vacancy_id)
+    document_status = Document.objects.filter(vacancy=vacancy).first()
+
+    ctx = {
+        "document_status": document_status,
+        "vacancy": vacancy,
+    }
+
+    return render(request, "main/success.html", ctx)
+
+
+def my_application(request):
+    user = CustomUser.objects.get(id=request.user.id)
+    my_applications = DocumentUser.objects.filter(user=user)
+    ctx = {
+        "my_applications": my_applications
+    }
+
+    return render(request, 'main/my_application.html', ctx)
+
+
+def hover_status(request):
+    document_id = request.GET.get('id')  # GET orqali kelgan document_id
+    if document_id:
+        try:
+            # Shu document_id bo‘yicha DocumentUserni topamiz
+            document_user = DocumentUser.objects.get(document=document_id)
+
+            # DocumentIssue larni olib chiqamiz
+            issue = DocumentIssue.objects.filter(document_user__document=document_user.document).first()
+
+            # Agar issues bo'lsa, ularni chiqaramiz
+            if issue:
+                issues_data = [
+                    {
+                        "id": issue.id,
+                        "message": issue.message,
+                        "resolved": issue.resolved,
+                        "created_at": issue.created_at.strftime("%Y-%m-%d %H:%M"),
+                    }
+                ]
+                return JsonResponse({'issues': issues_data})
+            else:
+                return JsonResponse({'message': 'Hech qanday kamchilik topilmadi.'})
+
+        except DocumentUser.DoesNotExist:
+            return JsonResponse({'message': 'DocumentUser topilmadi'}, status=404)
+
+
+def signup_view(request):
+    if request.method == "POST":
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('home')
+        else:
+            messages.error(request, "Ma'lumotlaringizni to'g'ri kiriting.")  # Umumiy xato xabari
+    else:
+        form = RegistrationForm()
+
+    ctx = {
+        "form": form
+    }
+
+    return render(request, 'registration/sign_up.html', ctx)
+
+def sign_in_view(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)  # Foydalanuvchini tizimga kiritamiz
+                return redirect('home')  # Bosh sahifaga yo'naltirish
+            else:
+                messages.error(request, "Foydalanuvchi nomi yoki parol noto‘g‘ri")
+        else:
+            messages.error(request, "Foydalanuvchi nomi yoki parol noto‘g‘ri")
+    else:
+        form = AuthenticationForm()
+
+    return render(request, 'registration/sign_in.html', {'form': form})
 
 def custom_404(request, exception):
-    return render(request, '404.html', name='error', status=404)
+    return render(request, '404.html', status=404)
+
+
+
+
+
+def logout_view(request):
+    logout(request)  # Foydalanuvchini tizimdan chiqarish
+    return redirect('home')
