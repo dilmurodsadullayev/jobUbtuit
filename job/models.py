@@ -23,7 +23,7 @@ def validate_birth_date(value):
 
 class CustomUser(AbstractUser):
     birthdate = models.DateField(blank=True, null=True)
-    phone_number = PhoneNumberField(null=True, blank=True, unique=True, region="UZ")
+    phone_number = PhoneNumberField(unique=True, region="UZ")
 
     def clean(self):
         super().clean()
