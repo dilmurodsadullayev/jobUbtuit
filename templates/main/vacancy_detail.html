@@ -109,6 +109,14 @@
                     <p><strong>Talablar:</strong> {{ vacancy.requirement }}</p>
                     <p><strong>Ochilgan vaqt:</strong> {{ vacancy.opening_time }}</p>
                     <p><strong>Tugash vaqti:</strong> {{ vacancy.end_time }}</p>
+                    <p>
+                      <strong><i class="bi bi-people-fill text-primary"></i> Ariza yuborganlar:</strong>
+                        {% if document_count %}
+                            {{ document_count }} ta
+                        {% else %}
+                            0 ta
+                        {% endif %}
+                    </p>
                      <!-- Muddati tugagan xabar -->
                     {% if vacancy.status %}
 

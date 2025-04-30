@@ -4,7 +4,7 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Vacancy, Document, DocumentUser, CustomUser, DocumentIssue
+from .models import Vacancy, Document, DocumentUser, CustomUser, DocumentIssue, View
 from .forms import DocumentCreateForm, RegistrationForm
 from django.contrib.auth.forms import AuthenticationForm
 
@@ -12,10 +12,19 @@ from django.contrib.auth.forms import AuthenticationForm
 # Create your views here.
 
 def index_view(request):
-    vacancies = Vacancy.objects.all()
+    vacancy_views_list = []
+
+    for vacancy in Vacancy.objects.all():
+        views_count = View.objects.filter(vacancy=vacancy).count()
+        vacancy_views_list.append({
+            'vacancy': vacancy,
+            'views': views_count
+        })
+
+
 
     ctx = {
-        "vacancies": vacancies
+        "vacancy_views_list": vacancy_views_list
 
     }
 
@@ -26,12 +35,20 @@ def vacancy_detail(request,vacancy_id):
     user = CustomUser.objects.get(id=request.user.id)
     if request.method == "GET":
         vacancy = get_object_or_404(Vacancy, pk=vacancy_id)
+        is_view = View.objects.filter(user=user, vacancy=vacancy).exists()
+        document_count = Document.objects.filter(vacancy=vacancy).count()
+        if not is_view:
+            View.objects.create(user=user, vacancy=vacancy)
+        else:
+            pass
+
         try:
             document = Document.objects.get(vacancy=vacancy)
             education_levels = Document.EDUCATION_LEVELS
             form = DocumentCreateForm()
             ctx = {
                 "vacancy": vacancy,
+                'document_count': document_count,
                 "form": form,
                 "education_levels": education_levels,
                 "document": document
@@ -42,6 +59,7 @@ def vacancy_detail(request,vacancy_id):
             form = DocumentCreateForm()
             ctx = {
                 "vacancy": vacancy,
+                'document_count': document_count,
                 "form": form,
                 "education_levels": education_levels,
             }
@@ -59,7 +77,7 @@ def vacancy_detail(request,vacancy_id):
             if form.is_valid():
                 document = form.save(commit=False)
                 document.save()
-                print(document)
+                # print(document)
                 DocumentUser.objects.create(
                     user=user,
                     document=document
@@ -155,6 +173,9 @@ def hover_status(request):
 
         except DocumentUser.DoesNotExist:
             return JsonResponse({'message': 'DocumentUser topilmadi'}, status=404)
+
+
+
 
 
 def signup_view(request):
