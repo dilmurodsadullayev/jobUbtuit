@@ -27,7 +27,7 @@ import os
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 # DEBUG = os.getenv("DEBUG")
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -41,7 +41,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "job"
+    'rest_framework',
+    "job",
+
 ]
 
 AUTH_USER_MODEL = 'job.CustomUser'
@@ -56,6 +58,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+
+CORS_ALLOWED_ORIGINS = ['*']
 
 ROOT_URLCONF = 'config.urls'
 
