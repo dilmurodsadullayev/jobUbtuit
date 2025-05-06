@@ -1,0 +1,125 @@
+{% extends 'main/base_other.html' %}
+{% block title %}Profil sozlamalari{% endblock title %}
+{% block content %}
+
+<div class="container p-3">
+    <div class="card rounded-xl shadow p-3">
+        <h3 class="card-title text-center">Profil sozlamalari</h3>
+        <div class="card-body">
+            <form action="{% url 'profile' %}" method="post" class="form-group">
+                {% csrf_token %}
+
+                <!-- Username -->
+                <div class="mb-2">
+                    <input type="text" name="username" id="username" placeholder="Foydalanuvchi nomi" class="form-control p-3" value="{{ form.username.value|default:user.username }}" required>
+                    {% if form.username.errors %}
+                        <div class="text-danger">
+                            {{ form.username.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- First name -->
+                <div class="mb-2">
+                    <input type="text" name="first_name" id="fname" placeholder="Ism.." class="form-control p-3" value="{{ form.first_name.value|default:user.first_name }}" required>
+                    {% if form.first_name.errors %}
+                        <div class="text-danger">
+                            {{ form.first_name.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Last name -->
+                <div class="mb-2">
+                    <input type="text" name="last_name" id="lname" placeholder="Familiya.." class="form-control p-3" value="{{ form.last_name.value|default:user.last_name }}" required>
+                    {% if form.last_name.errors %}
+                        <div class="text-danger">
+                            {{ form.last_name.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Email -->
+                <div class="mb-2">
+                    <input type="text" name="email" id="email" placeholder="Email.." class="form-control p-3" value="{{ form.email.value|default:user.email }}" required>
+                    {% if form.email.errors %}
+                        <div class="text-danger">
+                            {{ form.email.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Birthdate -->
+                <div class="mb-2">
+                    <input type="date" name="birthdate" id="birthday" class="form-control p-3"
+                        value="{% if form.birthdate.value %}{{ form.birthdate.value }}{% elif user.birthdate %}{{ user.birthdate|date:'Y-m-d' }}{% endif %}"
+                        required>
+                    {% if form.birthdate.errors %}
+                        <div class="text-danger">
+                            {{ form.birthdate.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Phone -->
+                <div class="mb-3">
+                    <input type="text" name="phone_number" id="phone" placeholder="Telefon.." class="form-control p-3" value="{{ form.phone.value|default:user.phone_number }}" required>
+                    {% if form.phone.errors %}
+                        <div class="text-danger">
+                            {{ form.phone.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <hr>
+
+                <!-- Password 1 -->
+                <div class="mb-2 mt-1">
+                    <label for="password1">Yangi parol o'rnatish</label>
+                    <input type="password" name="password1" id="password1" placeholder="Parol.." class="form-control p-3 mb-1" required>
+                    {% if form.password1.errors %}
+                        <div class="text-danger">
+                            {{ form.password1.errors.0 }}
+                        </div>
+                    {% endif %}
+                    <input type="checkbox" class="form-check-input" id="checkbox1">
+                    <label for="checkbox1" class="ml-2">Parolni ko'rsatish</label>
+                </div>
+
+                <!-- Password 2 -->
+                <div class="mb-2 mt-1">
+                    <label for="password2">Yangi parolni takrorlang</label>
+                    <input type="password" name="password2" id="password2" placeholder="Parol.." class="form-control p-3 mb-1" required>
+                    {% if form.password2.errors %}
+                        <div class="text-danger">
+                            {{ form.password2.errors.0 }}
+                        </div>
+                    {% endif %}
+                    <input type="checkbox" class="form-check-input" id="checkbox2">
+                    <label for="checkbox2" class="ml-2">Parolni ko'rsatish</label>
+                </div>
+
+                <div class="mb-2 mt-4">
+                    <input type="submit" value="Saqlash" class="btn btn-outline-success">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    const checkbox1 = document.getElementById('checkbox1');
+    const checkbox2 = document.getElementById('checkbox2');
+    const password1 = document.getElementById('password1');
+    const password2 = document.getElementById('password2');
+
+    checkbox1.addEventListener('change', function() {
+        password1.type = this.checked ? 'text' : 'password';
+    });
+
+    checkbox2.addEventListener('change', function() {
+        password2.type = this.checked ? 'text' : 'password';
+    });
+</script>
+
+{% endblock content %}

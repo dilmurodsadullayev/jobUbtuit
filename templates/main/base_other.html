@@ -27,13 +27,13 @@
             <!-- Logo va Tugmalar -->
             <div class="flex items-center justify-between w-full border-b-2 border-white pb-4">
                 <!-- Logo -->
-                <a href="{% url 'home' %}" style="text-decoration:  none;">
+                <a href="{% url 'home' %}" style="text-decoration: none;">
                     <div class="flex items-center space-x-3">
-                        <img src="{% static 'images/logo_ubtuit.png' %}" alt="TATU UF Logo" class="h-12">
-                    <span class="text-xl font-bold" style="color:#fff">TATU UF</span>
+                    <img src="{% static 'images/logo_ubtuit.png' %}" alt="TATU UF Logo" class="h-12">
+                    <span class="text-xl font-bold" style="color: #fff">TATU UF</span>
                 </div>
                 </a>
-    
+
                 <!-- Buttons -->
                 <div class="flex space-x-4 mt-4">
                     {% if request.user.is_authenticated %}
@@ -50,23 +50,10 @@
                     {% endif %}
                 </div>
             </div>
-    
-            <!-- Matn -->
-        <!-- Matn -->
-         <div class="div">
-                <h1 class="text-3xl font-bold leading-snug mt-12"> <!-- mt-12 qo'shildi -->
-                    Muhammad Al-Хorazmiy nomidagi <br> Toshkent Axborot Texnologiyalari Universiteti Urganch filiali
-                </h1>
 
-                <p class="text-lg font-medium mt-10"> <!-- mt-10 qo'shildi -->
-                    <a class="text-decoration-none text-white" href="{% url 'home' %}">Vakansiyalar Sayti</a>
-                </p>
-            </div>
-
-            
         </div>
     </header>
-    
+
 
 
 {% block content %}

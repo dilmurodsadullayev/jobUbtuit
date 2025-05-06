@@ -3,36 +3,77 @@
 Toshkent Axborot Texnologiyalari Universiteti Urganch filiali
 Vakansiyalar Sayti {% endblock title %}
 {% block content %}
+<style>
+    .hidden{
+        display: none !important;
+    }
+    input{
+        border: 2px solid #fff;
+        outline: none;
+    }
+    input:focus{
+        border: 2px solid #4242cd;
+        outline: none;
+    }
+</style>
+
 <div class="container mx-auto py-10">
-    <h2 class="text-3xl font-bold text-center mb-8">Vakansiyalar</h2>
+    <div class="text-center row">
+        <div class="col-md-4 p-1"></div>
+        <div class="col-md-4 text-center p-1">
+            <h2 class="text-3xl font-bold text-center mb-8" style="display: inline;">Vakansiyalar</h2>
+        </div>
+        <div class="col-md-4 text-center p-1">
+            <input type="text" name="searchInput" id="searchInput" onkeyup="searchCards()" class="shadow-lg mb-3 p-3 ml-5 rounded" style="display: inline;" placeholder="Qidirish..">
+        </div>
+    </div>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         {% for vacancy in vacancy_views_list %}
-        <a href="{% url 'vacancy_detail' vacancy_id=vacancy.vacancy.id %}" class="text-decoration-none">
-            <div class="card shadow-lg border-0 rounded-3 p-4 mb-3">
-                <div class="d-flex align-items-center justify-content-between">
-                    <div>
-                        <h5 class="fw-bold text-dark mb-1">{{ vacancy.vacancy.department|truncatechars:30 }}</h5>
-                        <p class="text-muted small">{{ vacancy.vacancy.position }}</p>
+            <a href="{% url 'vacancy_detail' vacancy_id=vacancy.vacancy.id %}" class="text-decoration-none searching__cards">
+                <div class="card shadow-lg border-0 rounded-3 p-4 mb-3">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h5 class="fw-bold text-dark mb-1">{{ vacancy.vacancy.department|truncatechars:30 }}</h5>
+                            <p class="text-muted small">{{ vacancy.vacancy.position }}</p>
+                        </div>
+                        <div class="menu-dot"></div>
                     </div>
-                    <div class="menu-dot"></div>
-                </div>
 
-                <!-- Ko‘rishlar soni -->
-                <div class="d-flex justify-content-start align-items-center mt-2">
-                    <small class="text-muted"><b><i class="bi bi-eye"></i> {{ vacancy.views }}</b></small>
-                </div>
+                    <!-- Ko‘rishlar soni -->
+                    <div class="d-flex justify-content-start align-items-center mt-2">
+                        <small class="text-muted"><b><i class="bi bi-eye"></i> {{ vacancy.views }}</b></small>
+                    </div>
 
-                <div class="d-flex justify-content-between align-items-center mt-3">
-                    <span class="badge bg-primary p-2">{{ vacancy.vacancy.end_time }}</span>
-                    <button class="btn btn-success btn-sm px-3">Ko'rish</button>
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <span class="badge bg-primary p-2">{{ vacancy.vacancy.end_time }}</span>
+                        <button class="btn btn-success btn-sm px-3">Ko'rish</button>
+                    </div>
                 </div>
-            </div>
-        </a>
-        {% empty %}
-        <h3>No vacancy</h3>
+            </a>
+            {% empty %}
+            <h3>No vacancy</h3>
         {% endfor %}
 
     </div>
 </div>
+
+
+<script>
+        function searchCards() {
+            const input = document.getElementById('searchInput').value.toLowerCase();
+            const cards = document.querySelectorAll('.searching__cards');
+
+            cards.forEach(card => {
+                const title = card.querySelector('h5').innerText.toLowerCase();
+                const department = card.querySelector('p').innerText.toLowerCase();
+
+                if (title.includes(input) || department.includes(input)) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+</script>
 
 {% endblock content %}

@@ -215,6 +215,56 @@ def sign_in_view(request):
 
     return render(request, 'registration/sign_in.html', {'form': form})
 
+@login_required(login_url="/signin")
+def profile_view(request):
+    user = CustomUser.objects.get(id=request.user.id)
+
+    if request.method == "POST":
+        form = RegistrationForm(request.POST, instance=user)  # 🔥 instance=user qo'shildi!
+
+        if form.is_valid():
+            updated_user = form.save(commit=False)  # Faylasuflik: commit=False qilsang, o'zing set qilasan
+
+            # 🔎 Tekshiramiz: qaysi maydonlar POST'da borligini
+            if request.POST.get('username'):
+                updated_user.username = request.POST.get('username')
+            if request.POST.get('fname'):
+                updated_user.first_name = request.POST.get('first_name')
+            if request.POST.get('lname'):
+                updated_user.last_name = request.POST.get('last_name')
+            if request.POST.get('email'):
+                updated_user.email = request.POST.get('email')
+            if request.POST.get('birthdate'):
+                updated_user.birthdate = request.POST.get('birthdate')
+            if request.POST.get('phone'):
+                updated_user.phone_number = request.POST.get('phone_number')
+
+            # 🔐 Parollarni tekshirish (agar kiritsa)
+            password1 = request.POST.get('password1')
+            password2 = request.POST.get('password2')
+            if password1 and password2:
+                if password1 == password2:
+                    updated_user.set_password(password1)
+                else:
+                    messages.error(request, "Parollar mos kelmayapti!")
+
+            updated_user.save()
+            messages.success(request, "Profil muvaffaqiyatli yangilandi ✅")
+            return redirect('profile')  # Profil sahifasiga qaytaramiz
+
+        else:
+            messages.error(request, "Xatoliklar yuz berdi, iltimos tekshirib qayta yuboring.")
+            print(form.errors)
+    else:
+        form = RegistrationForm(instance=user)
+
+    ctx = {
+        'form': form,
+        'user': user,
+    }
+    return render(request, 'main/profile.html', ctx)
+
+
 def custom_404(request, exception):
     return render(request, '404.html', status=404)
 
